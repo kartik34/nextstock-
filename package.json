@@ -1,0 +1,30 @@
+{
+  "name": "stock",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kartik34/nextstock.git"
+  },
+  "author": "Kartik Singhal",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kartik34/nextstock/issues"
+  },
+  "homepage": "https://github.com/kartik34/nextstock#readme",
+  "dependencies": {
+    "body-parser": "^1.17.2",
+    "chart.js": "^2.6.0",
+    "highcharts": "^5.0.14",
+    "moment": "^2.18.1",
+    "mongoose": "^4.11.6",
+    "passport": "^0.4.0",
+    "passport-local": "^1.0.0",
+    "passport-local-mongoose": "^4.1.0",
+    "request": "^2.81.0"
+  }
+}
