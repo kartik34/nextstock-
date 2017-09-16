@@ -14,7 +14,7 @@ var express                   = require("express"),
       
 app.use(express.static("public")); 
         
-mongoose.connect("mongodb://localhost/stock_testing2");
+mongoose.connect("mongodb://kartik:kartik34@ds139884.mlab.com:39884/nextstock");
 
 app.use(require("express-session")({
     secret: "Waterloo Computer Science",
@@ -69,14 +69,7 @@ var time = parseInt(currenthour + currentminute);
 // INDEX ROUTE FOR ALL STOCKS 
 
 app.get("/", function(req,res){
-    // var url = "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&outputsize=compact&symbol=msft&apikey=1Z58O7VHS0UFIVII"; 
-    // request(url, function(error, response, body){
-    //         if(!error && response.statusCode == 200){
-    //             var parsedData = JSON.parse(body); 
-    //             console.log(parsedData['Time Series (Daily)'])
-
-    //         }
-    // })
+ 
     Stock.find({}, function(err, stocks){
        
       if(err){
@@ -108,7 +101,7 @@ app.get("/", function(req,res){
                            
                             lastclosing = simplify(moment().subtract(1, 'days').format().slice(0, 10));
                             lastupdated = lastclosing
-                            // previousprice = parseFloat(parsedData['Time Series (Daily)'][lastclosing]['1. open']).toFixed(2); 
+                            previousprice = parseFloat(parsedData['Time Series (Daily)'][lastclosing]['1. open']).toFixed(2); 
                             stockprice = parseFloat(parsedData['Time Series (Daily)'][lastclosing]['4. close']).toFixed(2); 
                             marketopen = false;  
                         }
@@ -157,7 +150,7 @@ app.get("/", function(req,res){
 
                         Stock.findByIdAndUpdate(stock._id, {
                             stockprice: stockprice, 
-                            previousprice: 0, 
+                            previousprice: previousprice, 
                             lastupdated: lastupdated
                         }, function(err, stock){
                             if(err){
