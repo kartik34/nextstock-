@@ -82,10 +82,12 @@ app.get("/", function(req,res){
             stocks.forEach(function(stock){
                
                 var url = "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&outputsize=compact&symbol=" + stock.ticker + "&apikey=1Z58O7VHS0UFIVII"; 
+                
                 request(url, function(error, response, body){
-                    
+                    var parsedData = JSON.parse(body);
+                    if(Object.keys(parsedData).length != 0){
                     if(!error && response.statusCode == 200){
-                        var parsedData = JSON.parse(body);
+                       
                         if(x == 0){
                             console.log("start")
                         }
@@ -152,18 +154,14 @@ app.get("/", function(req,res){
                             stockprice: stockprice, 
                             previousprice: previousprice, 
                             lastupdated: lastupdated
-                        }, function(err, stock){
-                            if(err){
-                                console.log(err)
-                            }else{
-                                if(stocks.length == x ){
-                                    res.render("index", {stocks: stocks, marketopen: marketopen})
-                                }
-                            }
                         })
+                    }
                     }
                 });
             });
+          
+            res.render("index", {stocks: stocks, marketopen: marketopen})
+                            
         }
     });
 });
