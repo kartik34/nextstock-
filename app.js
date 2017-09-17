@@ -85,8 +85,7 @@ app.get("/", function(req,res){
                         if(!error && response.statusCode == 200){
            
                             console.log(stock.ticker + "")
-                                
-                            //PARSED JSON dont move.
+
                              
                             // iterating to last object
                             if(moment().format('dddd') == "Saturday"){
