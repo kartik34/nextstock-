@@ -46,11 +46,6 @@ function simplify(date){
     date.toString()
     return date; 
 }
-// function opening(){
-//     var opening = moment().subtract(1, 'days').format().slice(0, 10)
-//     opening = simplify(opening); 
-//     return opening; 
-// }
 function date(){
     var date = moment().format().slice(0, 10)
     date = simplify(date); 
@@ -60,6 +55,7 @@ function date(){
 
 var currenthour = date().slice(10, 13);
 var currentminute =  date().slice(14, 16);
+var updatedStocks; 
 
 var time = parseInt(currenthour + currentminute);
 //============================================================================
@@ -76,8 +72,6 @@ app.get("/", function(req,res){
           console.log("something went wrong");
           console.log(err); 
       }else{
-          
-          var x = 0;
     
             stocks.forEach(function(stock){
                
@@ -85,77 +79,80 @@ app.get("/", function(req,res){
                 
                 request(url, function(error, response, body){
                     var parsedData = JSON.parse(body);
+                    
                     if(Object.keys(parsedData).length != 0){
-                    if(!error && response.statusCode == 200){
-                       
-                        if(x == 0){
-                            console.log("start")
-                        }
-                        console.log(stock.company + "")
-                        console.log(url)
-                        console.log(parsedData)
-                        //PARSED JSON dont move.
-                         
-                        // iterating to last object
-                        x = x + 1;
-                       
-                        if(moment().format('dddd') == "Saturday"){
-                           
-                            lastclosing = simplify(moment().subtract(1, 'days').format().slice(0, 10));
-                            lastupdated = lastclosing
-                            previousprice = parseFloat(parsedData['Time Series (Daily)'][lastclosing]['1. open']).toFixed(2); 
-                            stockprice = parseFloat(parsedData['Time Series (Daily)'][lastclosing]['4. close']).toFixed(2); 
-                            marketopen = false;  
-                        }
-                        else if(moment().format('dddd') == "Sunday"){
-                           
-                            lastclosing = simplify(moment().subtract(2, 'days').format().slice(0, 10));
-                            lastupdated = lastclosing.format('MMMM Do YYYY'); 
-                            previousprice = parseFloat(parsedData['Time Series (Daily)'][lastclosing]['1. open']).toFixed(2); 
-                            stockprice = parseFloat(parsedData['Time Series (Daily)'][lastclosing]['4. close']).toFixed(2); 
-                            marketopen = false;  
-                      
-                        }else if(time < 930 && moment().format('dddd') == "Monday"){
-     
-                            lastclosing = simplify(moment().subtract(3, 'days').format().slice(0, 10));
-                            lastupdated = lastclosing.format('MMMM Do YYYY'); 
-                            previousprice = parseFloat(parsedData['Time Series (Daily)'][lastclosing]['1. open']).toFixed(2); 
-                            stockprice = parseFloat(parsedData['Time Series (Daily)'][lastclosing]['4. close']).toFixed(2); 
-                            marketopen = false;  
-                            
-                        }
-                        else if(time < 930){
-                            
-                            lastclosing = simplify(moment().subtract(1, 'days').format().slice(0, 10));
-                            lastupdated = lastclosing.format('MMMM Do YYYY'); 
-                            previousprice = parseFloat(parsedData['Time Series (Daily)'][lastclosing]['1. open']).toFixed(2); 
-                            stockprice = parseFloat(parsedData['Time Series (Daily)'][lastclosing]['4. close']).toFixed(2); 
-                            marketopen = false; 
-                            
-                        }else{  
-                            if(time == 930){
+                   
+                        if(!error && response.statusCode == 200){
+           
+                            console.log(stock.ticker + "")
+                                
+                            //PARSED JSON dont move.
+                             
+                            // iterating to last object
+                            if(moment().format('dddd') == "Saturday"){
+                               
                                 lastclosing = simplify(moment().subtract(1, 'days').format().slice(0, 10));
-                                previousprice =  parseFloat(parsedData['Time Series (Daily)'][lastclosing]['1. open']).toFixed(2);
-                            }else{
-                                previousprice = parseFloat(parsedData['Time Series (Daily)'][date()]['1. open']).toFixed(2); 
+                                lastupdated = lastclosing
+                                previousprice = parseFloat(parsedData['Time Series (Daily)'][lastclosing]['1. open']).toFixed(2); 
+                                stockprice = parseFloat(parsedData['Time Series (Daily)'][lastclosing]['4. close']).toFixed(2); 
+                                marketopen = false;  
+                                console.log(stockprice)
+                            }
+                            else if(moment().format('dddd') == "Sunday"){
+                               
+                                lastclosing = simplify(moment().subtract(2, 'days').format().slice(0, 10));
+                                lastupdated = lastclosing.format('MMMM Do YYYY'); 
+                                previousprice = parseFloat(parsedData['Time Series (Daily)'][lastclosing]['1. open']).toFixed(2); 
+                                stockprice = parseFloat(parsedData['Time Series (Daily)'][lastclosing]['4. close']).toFixed(2); 
+                                marketopen = false;  
+                          
+                            }else if(time < 930 && moment().format('dddd') == "Monday"){
+         
+                                lastclosing = simplify(moment().subtract(3, 'days').format().slice(0, 10));
+                                lastupdated = lastclosing.format('MMMM Do YYYY'); 
+                                previousprice = parseFloat(parsedData['Time Series (Daily)'][lastclosing]['1. open']).toFixed(2); 
+                                stockprice = parseFloat(parsedData['Time Series (Daily)'][lastclosing]['4. close']).toFixed(2); 
+                                marketopen = false;  
                                 
                             }
-                            
-                            stockprice = parseFloat(parsedData['Time Series (Daily)'][date()]['4. close']).toFixed(2); 
-                            lastupdated = moment().format('MMMM Do YYYY');
-                            marketopen = true;  
-                            console.log(stockprice)
-                            console.log(previousprice)
-
+                            else if(time < 930){
+                                
+                                lastclosing = simplify(moment().subtract(1, 'days').format().slice(0, 10));
+                                lastupdated = lastclosing.format('MMMM Do YYYY'); 
+                                previousprice = parseFloat(parsedData['Time Series (Daily)'][lastclosing]['1. open']).toFixed(2); 
+                                stockprice = parseFloat(parsedData['Time Series (Daily)'][lastclosing]['4. close']).toFixed(2); 
+                                marketopen = false; 
+                                
+                            }else{  
+                                if(time == 930){
+                                    lastclosing = simplify(moment().subtract(1, 'days').format().slice(0, 10));
+                                    previousprice =  parseFloat(parsedData['Time Series (Daily)'][lastclosing]['1. open']).toFixed(2);
+                                }else{
+                                    previousprice = parseFloat(parsedData['Time Series (Daily)'][date()]['1. open']).toFixed(2); 
+                                    
+                                }
+                                
+                                stockprice = parseFloat(parsedData['Time Series (Daily)'][date()]['4. close']).toFixed(2); 
+                                lastupdated = moment().format('MMMM Do YYYY');
+                                marketopen = true;  
+                                console.log(stockprice)
+                                console.log(previousprice)
+    
+                            }
+    
+                            Stock.findByIdAndUpdate(stock._id, {
+                                stockprice: stockprice, 
+                                previousprice: previousprice, 
+                                lastupdated: lastupdated
+                            }, function(err, stocks){
+                                if(err){
+                                    console.log(err)
+                                }else{
+                                    updatedStocks = stocks;
+                                    console.log(updatedStocks)
+                                }
+                            })
                         }
-
-
-                        Stock.findByIdAndUpdate(stock._id, {
-                            stockprice: stockprice, 
-                            previousprice: previousprice, 
-                            lastupdated: lastupdated
-                        })
-                    }
                     }
                 });
             });
