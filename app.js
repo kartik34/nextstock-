@@ -100,7 +100,7 @@ app.get("/", function(req,res){
                             else if(moment().format('dddd') == "Sunday"){
                                
                                 lastclosing = simplify(moment().subtract(2, 'days').format().slice(0, 10));
-                                lastupdated = lastclosing.format('MMMM Do YYYY'); 
+                                lastupdated = lastclosing
                                 previousprice = parseFloat(parsedData['Time Series (Daily)'][lastclosing]['1. open']).toFixed(2); 
                                 stockprice = parseFloat(parsedData['Time Series (Daily)'][lastclosing]['4. close']).toFixed(2); 
                                 marketopen = false;  
